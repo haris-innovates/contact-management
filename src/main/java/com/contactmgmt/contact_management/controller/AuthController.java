@@ -1,6 +1,7 @@
 package com.contactmgmt.contact_management.controller;
 
 import com.contactmgmt.contact_management.dto.AuthResponse;
+import com.contactmgmt.contact_management.dto.ChangePasswordRequest;
 import com.contactmgmt.contact_management.dto.LoginRequest;
 import com.contactmgmt.contact_management.dto.RegisterRequest;
 import com.contactmgmt.contact_management.service.AuthService;
@@ -35,4 +36,14 @@ public class AuthController {
         AuthResponse response = authService.login(request);
         return ResponseEntity.ok(response);
     }
+
+    @PutMapping("/change-password")
+    public ResponseEntity<AuthResponse> changePassword(
+            @RequestBody ChangePasswordRequest request,
+            java.security.Principal principal) {
+        logger.info("Change password request received");
+        AuthResponse response = authService.changePassword(principal.getName(), request);
+        return ResponseEntity.ok(response);
+    }
+
 }

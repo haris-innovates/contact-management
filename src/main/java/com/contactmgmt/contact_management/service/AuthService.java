@@ -1,6 +1,7 @@
 package com.contactmgmt.contact_management.service;
 
 import com.contactmgmt.contact_management.dto.AuthResponse;
+import com.contactmgmt.contact_management.dto.ChangePasswordRequest;
 import com.contactmgmt.contact_management.dto.LoginRequest;
 import com.contactmgmt.contact_management.dto.RegisterRequest;
 import com.contactmgmt.contact_management.entity.User;
@@ -74,5 +75,23 @@ public class AuthService {
         logger.info("Login successful for: {}", request.getIdentifier());
 
         return new AuthResponse(token, "Login successful");
+    }
+
+    public AuthResponse changePassword(String identifier, ChangePasswordRequest request) {
+        logger.info("Change password request for: {}", identifier);
+
+        User user = userRepository.findByEmail(identifier)
+                .orElseGet(() -> userRepository.findByPhoneNumber(identifier)
+                        .orElseThrow(() -> new RuntimeException("User not found")));
+
+        if (!passwordEncoder.matches(request.getOldPassword(), user.getPassword())) {
+            throw new RuntimeException("Old password is incorrect");
+        }
+
+        user.setPassword(passwordEncoder.encode(request.getNewPassword()));
+        userRepository.save(user);
+
+        logger.info("Password changed successfully for: {}", identifier);
+        return new AuthResponse(null, "Password changed successfully");
     }
 }
