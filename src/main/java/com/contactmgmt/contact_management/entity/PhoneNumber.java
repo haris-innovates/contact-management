@@ -6,7 +6,8 @@ import lombok.*;
 @Entity
 @Table(name = "phone_numbers")
 @Getter @Setter
-@NoArgsConstructor @AllArgsConstructor
+@NoArgsConstructor
+@AllArgsConstructor
 @Builder
 public class PhoneNumber {
 

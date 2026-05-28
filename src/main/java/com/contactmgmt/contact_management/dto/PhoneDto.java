@@ -4,7 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Getter @Setter
-public class ChangePasswordRequest {
-    private String oldPassword;
-    private String newPassword;
+public class PhoneDto {
+    private String number;
+    private String label;
 }

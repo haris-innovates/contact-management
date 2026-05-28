@@ -6,7 +6,8 @@ import lombok.*;
 @Entity
 @Table(name = "email_addresses")
 @Getter @Setter
-@NoArgsConstructor @AllArgsConstructor
+@NoArgsConstructor
+@AllArgsConstructor
 @Builder
 public class EmailAddress {
 
