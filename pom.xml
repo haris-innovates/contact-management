@@ -28,6 +28,9 @@
 	</scm>
 	<properties>
 		<java.version>25</java.version>
+        <sonar.projectKey>contact-management</sonar.projectKey>
+        <sonar.projectName>contact-management</sonar.projectName>
+        <sonar.host.url>http://localhost:9000</sonar.host.url>
 	</properties>
 	<dependencies>
 		<dependency>
