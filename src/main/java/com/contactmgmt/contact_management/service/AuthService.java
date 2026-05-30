@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import com.contactmgmt.contact_management.exception.AppException;
 
 @Service
 public class AuthService {
@@ -31,15 +32,15 @@ public class AuthService {
         logger.info("Registering new user with email: {}", request.getEmail());
 
         if (request.getEmail() == null && request.getPhoneNumber() == null) {
-            throw new RuntimeException("Email or phone number is required");
+            throw new AppException("Email or phone number is required");
         }
 
         if (request.getEmail() != null && userRepository.existsByEmail(request.getEmail())) {
-            throw new RuntimeException("Email already exists");
+            throw new AppException("Email already exists");
         }
 
         if (request.getPhoneNumber() != null && userRepository.existsByPhoneNumber(request.getPhoneNumber())) {
-            throw new RuntimeException("Phone number already exists");
+            throw new AppException("Phone number already exists");
         }
 
         User user = User.builder()
@@ -64,11 +65,11 @@ public class AuthService {
 
         User user = userRepository.findByEmail(request.getIdentifier())
                 .orElseGet(() -> userRepository.findByPhoneNumber(request.getIdentifier())
-                        .orElseThrow(() -> new RuntimeException("User not found")));
+                        .orElseThrow(() -> new AppException("User not found")));
 
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
             logger.warn("Invalid password for user: {}", request.getIdentifier());
-            throw new RuntimeException("Invalid password");
+            throw new AppException("Invalid password");
         }
 
         String token = jwtUtil.generateToken(request.getIdentifier());
@@ -82,10 +83,10 @@ public class AuthService {
 
         User user = userRepository.findByEmail(identifier)
                 .orElseGet(() -> userRepository.findByPhoneNumber(identifier)
-                        .orElseThrow(() -> new RuntimeException("User not found")));
+                        .orElseThrow(() -> new AppException("User not found")));
 
         if (!passwordEncoder.matches(request.getOldPassword(), user.getPassword())) {
-            throw new RuntimeException("Old password is incorrect");
+            throw new AppException("Old password is incorrect");
         }
 
         user.setPassword(passwordEncoder.encode(request.getNewPassword()));

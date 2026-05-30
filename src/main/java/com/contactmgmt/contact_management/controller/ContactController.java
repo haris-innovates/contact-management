@@ -17,11 +17,10 @@ import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/contacts")
-@CrossOrigin(origins = "*")
+@CrossOrigin(origins = "http://localhost:3000")
 public class ContactController {
 
     private static final Logger logger = LoggerFactory.getLogger(ContactController.class);
@@ -45,7 +44,7 @@ public class ContactController {
                 dto.setNumber(p.getNumber());
                 dto.setLabel(p.getLabel());
                 return dto;
-            }).collect(Collectors.toList());
+            }).toList();
             response.setPhoneNumbers(phones);
         }
 
@@ -55,7 +54,7 @@ public class ContactController {
                 dto.setEmail(e.getEmail());
                 dto.setLabel(e.getLabel());
                 return dto;
-            }).collect(Collectors.toList());
+            }).toList();
             response.setEmailAddresses(emails);
         }
 
@@ -80,7 +79,7 @@ public class ContactController {
         Page<Contact> contacts = contactService.getContacts(principal.getName(), page, size, search);
         List<ContactResponse> responses = contacts.stream()
                 .map(this::toResponse)
-                .collect(Collectors.toList());
+                .toList();
         return ResponseEntity.ok(new PageImpl<>(responses, contacts.getPageable(), contacts.getTotalElements()));
     }
 

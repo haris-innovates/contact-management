@@ -40,7 +40,7 @@ public class JwtUtil {
         try {
             extractClaims(token);
             return true;
-        } catch (Exception e) {
+        } catch (Exception _) {
             return false;
         }
     }

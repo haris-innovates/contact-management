@@ -15,13 +15,14 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import com.contactmgmt.contact_management.exception.AppException;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class ContactService {
-
+    private static final String CONTACT_NOT_FOUND = "Contact not found";
     private static final Logger logger = LoggerFactory.getLogger(ContactService.class);
 
     private final ContactRepository contactRepository;
@@ -37,7 +38,7 @@ public class ContactService {
 
         User user = userRepository.findByEmail(identifier)
                 .orElseGet(() -> userRepository.findByPhoneNumber(identifier)
-                        .orElseThrow(() -> new RuntimeException("User not found")));
+                        .orElseThrow(() -> new AppException("User not found")));
 
         Contact contact = new Contact();
         contact.setFirstName(request.getFirstName());
@@ -77,7 +78,7 @@ public class ContactService {
 
         User user = userRepository.findByEmail(identifier)
                 .orElseGet(() -> userRepository.findByPhoneNumber(identifier)
-                        .orElseThrow(() -> new RuntimeException("User not found")));
+                        .orElseThrow(() -> new AppException("User not found")));
 
         Pageable pageable = PageRequest.of(page, size);
 
@@ -91,7 +92,7 @@ public class ContactService {
         logger.info("Updating contact {} for user: {}", contactId, identifier);
 
         Contact contact = contactRepository.findById(contactId)
-                .orElseThrow(() -> new RuntimeException("Contact not found"));
+                .orElseThrow(() -> new AppException(CONTACT_NOT_FOUND));
 
         contact.setFirstName(request.getFirstName());
         contact.setLastName(request.getLastName());
@@ -125,13 +126,13 @@ public class ContactService {
     public void deleteContact(String identifier, Long contactId) {
         logger.info("Deleting contact {} for user: {}", contactId, identifier);
         Contact contact = contactRepository.findById(contactId)
-                .orElseThrow(() -> new RuntimeException("Contact not found"));
+                .orElseThrow(() -> new AppException(CONTACT_NOT_FOUND));
         contactRepository.delete(contact);
     }
 
     public Contact getContactById(String identifier, Long contactId) {
         logger.info("Fetching contact {} for user: {}", contactId, identifier);
         return contactRepository.findById(contactId)
-                .orElseThrow(() -> new RuntimeException("Contact not found"));
+                .orElseThrow(() -> new AppException(CONTACT_NOT_FOUND));
     }
 }
