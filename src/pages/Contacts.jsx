@@ -80,6 +80,10 @@ export default function Contacts() {
                   <td style={styles.td}>{c.lastName}</td>
                   <td style={styles.td}>{c.title}</td>
                   <td style={styles.td}>
+                    <button style={styles.viewBtn}
+                      onClick={() => navigate(`/contacts/view/${c.id}`)}>
+                      View
+                    </button>
                     <button style={styles.editBtn}
                       onClick={() => navigate(`/contacts/edit/${c.id}`)}>
                       Edit
@@ -137,4 +141,5 @@ const styles = {
   pageBtn: { padding: '6px 12px', border: '1px solid #ddd', borderRadius: '4px', cursor: 'pointer' },
   modal: { position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.5)', display: 'flex', justifyContent: 'center', alignItems: 'center' },
   modalBox: { background: 'white', padding: '2rem', borderRadius: '8px', textAlign: 'center' },
+  viewBtn: { padding: '6px 12px', background: '#722ed1', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer', marginRight: '8px' },
 };

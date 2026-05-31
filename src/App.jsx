@@ -5,6 +5,7 @@ import Register from './pages/Register';
 import Contacts from './pages/Contacts';
 import ContactForm from './pages/ContactForm';
 import Profile from './pages/Profile';
+import ContactView from './pages/ContactView';
 
 const PrivateRoute = ({ children }) => {
   const token = localStorage.getItem('token');
@@ -23,6 +24,7 @@ function App() {
           <Route path="/contacts/edit/:id" element={<PrivateRoute><ContactForm /></PrivateRoute>} />
           <Route path="/profile" element={<PrivateRoute><Profile /></PrivateRoute>} />
           <Route path="*" element={<Navigate to="/login" />} />
+          <Route path="/contacts/view/:id" element={<PrivateRoute><ContactView /></PrivateRoute>} />
         </Routes>
       </BrowserRouter>
     </AuthProvider>
