@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import { register } from '../services/api';
 import { useAuth } from '../context/AuthContext';
 
@@ -8,7 +10,6 @@ export default function Register() {
     email: '', phoneNumber: '', password: '',
     firstName: '', lastName: ''
   });
-  const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const { loginUser } = useAuth();
   const navigate = useNavigate();
@@ -20,71 +21,113 @@ export default function Register() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    setError('');
     try {
       const res = await register(form);
       loginUser(res.data.token, null);
-      navigate('/contacts');
+      toast.success('Account created successfully!');
+      setTimeout(() => navigate('/contacts'), 1000);
     } catch (err) {
-      setError(err.response?.data?.message || 'Registration failed');
+      toast.error(err.response?.data?.message || 'Registration failed');
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div style={styles.container}>
-      <div style={styles.card}>
-        <h2 style={styles.title}>Register</h2>
-        {error && <p style={styles.error}>{error}</p>}
-        <form onSubmit={handleSubmit}>
-          <input style={styles.input} type="text" name="firstName"
-            placeholder="First Name" value={form.firstName}
-            onChange={handleChange} required />
-          <input style={styles.input} type="text" name="lastName"
-            placeholder="Last Name" value={form.lastName}
-            onChange={handleChange} required />
-          <input style={styles.input} type="email" name="email"
-            placeholder="Email" value={form.email}
-            onChange={handleChange} />
-          <input style={styles.input} type="text" name="phoneNumber"
-            placeholder="Phone Number" value={form.phoneNumber}
-            onChange={handleChange} />
-          <input style={styles.input} type="password" name="password"
-            placeholder="Password" value={form.password}
-            onChange={handleChange} required />
-          <button style={styles.button} type="submit" disabled={loading}>
-            {loading ? 'Registering...' : 'Register'}
-          </button>
-        </form>
-        <p style={styles.link}>
-          Already have an account? <Link to="/login">Login</Link>
-        </p>
+    <div style={styles.page}>
+      <ToastContainer position="top-right" autoClose={3000} />
+      <div style={styles.left}>
+        <div style={styles.brand}>
+          <h1 style={styles.brandTitle}>ContactHub</h1>
+          <p style={styles.brandSub}>Your personal contact manager</p>
+          <div style={styles.features}>
+            <p style={styles.feature}>✓ Store unlimited contacts</p>
+            <p style={styles.feature}>✓ Search and filter easily</p>
+            <p style={styles.feature}>✓ Secure and private</p>
+          </div>
+        </div>
+      </div>
+      <div style={styles.right}>
+        <div style={styles.formBox}>
+          <h2 style={styles.title}>Create Account</h2>
+          <p style={styles.subtitle}>Join ContactHub today</p>
+          <form onSubmit={handleSubmit}>
+            <div style={styles.row}>
+              <div style={{ ...styles.field, flex: 1, marginRight: '1rem' }}>
+                <label style={styles.label}>First Name</label>
+                <input style={styles.input} type="text" name="firstName"
+                  placeholder="John" value={form.firstName}
+                  onChange={handleChange} required />
+              </div>
+              <div style={{ ...styles.field, flex: 1 }}>
+                <label style={styles.label}>Last Name</label>
+                <input style={styles.input} type="text" name="lastName"
+                  placeholder="Doe" value={form.lastName}
+                  onChange={handleChange} required />
+              </div>
+            </div>
+            <div style={styles.field}>
+              <label style={styles.label}>Email Address</label>
+              <input style={styles.input} type="email" name="email"
+                placeholder="john@example.com" value={form.email}
+                onChange={handleChange} />
+            </div>
+            <div style={styles.field}>
+              <label style={styles.label}>Phone Number</label>
+              <input style={styles.input} type="text" name="phoneNumber"
+                placeholder="03001234567" value={form.phoneNumber}
+                onChange={handleChange} />
+            </div>
+            <div style={styles.field}>
+              <label style={styles.label}>Password</label>
+              <input style={styles.input} type="password" name="password"
+                placeholder="Create a strong password" value={form.password}
+                onChange={handleChange} required />
+            </div>
+            <button style={styles.button} type="submit" disabled={loading}>
+              {loading ? 'Creating Account...' : 'Create Account'}
+            </button>
+          </form>
+          <p style={styles.link}>
+            Already have an account? <Link to="/login">Sign in</Link>
+          </p>
+        </div>
       </div>
     </div>
   );
 }
 
 const styles = {
-  container: {
-    display: 'flex', justifyContent: 'center',
-    alignItems: 'center', height: '100vh', background: '#f0f2f5'
+  page: { display: 'flex', minHeight: '100vh' },
+  left: {
+    flex: 1,
+    background: 'linear-gradient(135deg, #00b894 0%, #00cec9 100%)',
+    display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '2rem',
   },
-  card: {
-    background: 'white', padding: '2rem', borderRadius: '8px',
-    boxShadow: '0 2px 10px rgba(0,0,0,0.1)', width: '350px'
+  brand: { textAlign: 'center', color: 'white' },
+  brandTitle: { fontSize: '3rem', fontWeight: '700', marginBottom: '1rem' },
+  brandSub: { fontSize: '1.2rem', opacity: 0.9, marginBottom: '2rem' },
+  features: { textAlign: 'left' },
+  feature: { fontSize: '1.1rem', marginBottom: '0.8rem', opacity: 0.9 },
+  right: {
+    flex: 1, display: 'flex', alignItems: 'center',
+    justifyContent: 'center', padding: '2rem', background: 'white',
   },
-  title: { textAlign: 'center', marginBottom: '1.5rem', color: '#333' },
+  formBox: { width: '100%', maxWidth: '450px' },
+  title: { fontSize: '2rem', fontWeight: '700', marginBottom: '0.5rem', color: '#2d3436' },
+  subtitle: { color: '#636e72', marginBottom: '2rem' },
+  row: { display: 'flex' },
+  field: { marginBottom: '1.2rem' },
+  label: { display: 'block', marginBottom: '0.5rem', fontWeight: '500', color: '#2d3436', fontSize: '14px' },
   input: {
-    width: '100%', padding: '10px', marginBottom: '1rem',
-    border: '1px solid #ddd', borderRadius: '4px',
-    fontSize: '14px', boxSizing: 'border-box'
+    width: '100%', padding: '12px 16px', border: '2px solid #dfe6e9',
+    borderRadius: '8px', fontSize: '15px', outline: 'none', boxSizing: 'border-box',
   },
   button: {
-    width: '100%', padding: '10px', background: '#52c41a',
-    color: 'white', border: 'none', borderRadius: '4px',
-    fontSize: '16px', cursor: 'pointer'
+    width: '100%', padding: '14px',
+    background: 'linear-gradient(135deg, #00b894 0%, #00cec9 100%)',
+    color: 'white', border: 'none', borderRadius: '8px',
+    fontSize: '16px', fontWeight: '600', cursor: 'pointer', marginTop: '0.5rem',
   },
-  error: { color: 'red', textAlign: 'center', marginBottom: '1rem' },
-  link: { textAlign: 'center', marginTop: '1rem' }
+  link: { textAlign: 'center', marginTop: '1.5rem', color: '#636e72' },
 };
