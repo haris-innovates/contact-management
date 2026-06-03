@@ -19,19 +19,36 @@ export default function Register() {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    try {
-      const res = await register(form);
-      loginUser(res.data.token, null);
-      toast.success('Account created successfully!');
-      setTimeout(() => navigate('/contacts'), 1000);
-    } catch (err) {
-      toast.error(err.response?.data?.message || 'Registration failed');
-    } finally {
-      setLoading(false);
-    }
-  };
+  e.preventDefault();
+  setLoading(true);
+
+  if (form.password.length < 8) {
+    toast.error('Password must be at least 8 characters');
+    setLoading(false);
+    return;
+  }
+  if (!/(?=.*[a-zA-Z])(?=.*[0-9])/.test(form.password)) {
+    toast.error('Password must contain letters and numbers');
+    setLoading(false);
+    return;
+  }
+  if (!form.email && !form.phoneNumber) {
+    toast.error('Please provide email or phone number');
+    setLoading(false);
+    return;
+  }
+
+  try {
+    const res = await register(form);
+    loginUser(res.data.token, null);
+    toast.success('Account created successfully!');
+    setTimeout(() => navigate('/contacts'), 1000);
+  } catch (err) {
+    toast.error(err.response?.data?.message || 'Registration failed');
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
     <div style={styles.page}>

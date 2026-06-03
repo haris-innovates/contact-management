@@ -114,23 +114,31 @@ export default function ContactForm() {
             </div>
 
             <h3 style={styles.section}>Phone Numbers</h3>
-            {form.phoneNumbers?.map((p, i) => (
-              <div key={i} style={styles.inputRow}>
-                <input style={{ ...styles.input, flex: 2 }} type="text"
-                  placeholder="Phone number" value={p.number}
-                  onChange={(e) => handlePhoneChange(i, 'number', e.target.value)} />
-                <select style={{ ...styles.input, flex: 1 }} value={p.label}
-                  onChange={(e) => handlePhoneChange(i, 'label', e.target.value)}>
-                  <option value="personal">Personal</option>
-                  <option value="work">Work</option>
-                  <option value="home">Home</option>
-                </select>
-                {form.phoneNumbers.length > 1 && (
-                  <button type="button" style={styles.removeBtn}
-                    onClick={() => removePhone(i)}>✕</button>
-                )}
-              </div>
-            ))}
+           {form.phoneNumbers?.map((p, i) => (
+             <div key={i} style={{ marginBottom: '0.75rem' }}>
+              <div style={styles.inputRow}>
+      <input style={{ ...styles.input, flex: 2 }} type="text"
+        placeholder="+92XXXXXXXXXX" value={p.number}
+        onChange={(e) => {
+          const val = e.target.value;
+          if (/^[+]?[0-9]*$/.test(val)) {
+            handlePhoneChange(i, 'number', val);
+          }
+        }} />
+      <select style={{ ...styles.input, flex: 1 }} value={p.label}
+        onChange={(e) => handlePhoneChange(i, 'label', e.target.value)}>
+        <option value="personal">Personal</option>
+        <option value="work">Work</option>
+        <option value="home">Home</option>
+      </select>
+      {form.phoneNumbers.length > 1 && (
+        <button type="button" style={styles.removeBtn}
+          onClick={() => removePhone(i)}>✕</button>
+      )}
+    </div>
+    <p style={styles.hint}>Digits only. Use + for country code (e.g. +92XXXXXXXXXX)</p>
+  </div>
+))}
             <button type="button" style={styles.addFieldBtn}
               onClick={() => setForm({ ...form, phoneNumbers: [...form.phoneNumbers, { number: '', label: 'personal' }] })}>
               + Add Phone
@@ -195,4 +203,5 @@ const styles = {
   formActions: { display: 'flex', gap: '1rem', marginTop: '2rem' },
   saveBtn: { flex: 1, padding: '14px', background: 'linear-gradient(135deg, #6c5ce7, #a29bfe)', color: 'white', border: 'none', borderRadius: '8px', cursor: 'pointer', fontWeight: '600', fontSize: '16px' },
   cancelBtn: { padding: '14px 24px', background: '#f5f6fa', border: 'none', borderRadius: '8px', cursor: 'pointer', fontWeight: '600', color: '#636e72', fontSize: '16px' },
+  hint: { fontSize: '12px', color: '#636e72', marginTop: '-0.5rem', marginBottom: '0.5rem' },
 };
